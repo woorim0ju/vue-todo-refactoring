@@ -46,7 +46,6 @@ export default {
     removeAll: function(){
       localStorage.clear();  
       this.todos = []; 
-
     }
   },
 
