@@ -7,7 +7,7 @@
 <script>
 export default {
     methods: {
-        clearAllFn: function(){
+        clearAllFn(){
             this.$emit('removeItem');
         }
     }

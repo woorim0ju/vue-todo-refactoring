@@ -1,6 +1,7 @@
 <template>
   <div>
-      <ul>
+    <transition-group name="list" tag="ul">
+      <!-- <ul> -->
           <!-- todos를 propsdata로 변경 -->
           <li v-for="(todo, idx) in propsdata" v-bind:key="todo"> 
             <i class="fas fa-check checkBtn" v-bind:class="{checkBtnCompleted: todo.completed}" 
@@ -10,8 +11,8 @@
                 <i class="far fa-trash-alt"></i>
             </span>
           </li>
-      </ul>
-      
+      <!-- </ul> -->
+    </transition-group>  
   </div>    
 </template>
 
@@ -19,10 +20,10 @@
 export default {
   props: ['propsdata'], //' ' 잊지말것
   methods:{
-      removeFn: function(todo, idx){
+      removeFn(todo, idx){
         this.$emit('removeItem', todo, idx); //이벤트명과 todo, idx 인자 그대로 보내줌
       },
-      toggleFn: function(todo, idx){
+      toggleFn(todo, idx){
         this.$emit('toggleItem', todo, idx)  //이벤트명과 todo, idx 인자 그대로 보내줌
       }
   }
@@ -61,5 +62,13 @@ li{
 .textCompleted{
   text-decoration: line-through;
   color: #b3adad;
+}
+/* 리스트 아이템 트랜지션 효과 */
+.list-enter-active, .list-leave-active {
+  transition: all 0.8s;
+}
+.list-enter, .list-leave-to /* .list-leave-active below version 2.1.8 */ {
+  opacity: 0;
+  transform: translateY(30px);
 }
 </style>
