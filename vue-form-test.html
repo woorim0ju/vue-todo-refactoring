@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1,minimal-ui" name="viewport">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic|Material+Icons">
+    <link rel="stylesheet" href="https://unpkg.com/vue-material/dist/vue-material.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/vue-material/dist/theme/default.css">
+</head>
+
+<body>
+    <div id="app" style="max-width: 80%; margin: 30px auto">
+        <form class="md-layout" @submit.prevent="submitForm">
+
+            <md-card class="md-layout-item md-size-50 md-small-size-100">
+                <md-card-header>
+                    <div class="md-title">Sign up</div>
+                </md-card-header>
+
+                <md-card-content>
+                    <div class="md-layout md-gutter">
+                        <div class="md-layout-item md-size-50 md-small-size-100">
+                            <md-field>
+                                <label for="name">Name</label>
+                                <md-input type="text" id="name" placeholder="Your name" v-model="form.name" required />
+                            </md-field>
+                        </div>
+                        <div class="md-layout-item md-size-50 md-small-size-100">
+                            <md-field>
+                                <label for="email">Email address</label>
+                                <md-input type="email" id="email" placeholder="name@example.com" v-model="form.email" />
+                            </md-field>
+                        </div>
+                        <div class="md-layout-item md-size-50 md-small-size-100">
+                            <div>
+                                <label for="gender">Gender</label><br />
+                                <md-radio value="male" v-model="form.gender">Male</md-radio>
+                                <md-radio value="female" v-model="form.gender">Femail</md-radio>
+                            </div>
+                        </div>
+
+                        <div class="md-layout-item md-size-50 md-small-size-100">
+                            <md-field>
+                                <label for="job">Your job</label>
+                                <md-select multiple v-model="form.profession">
+                                    <md-option value="developer">Developer</md-option>
+                                    <md-option value="designer">Graphic Designer</md-option>
+                                    <md-option value="manager">Manager</md-option>
+                                    <md-option value="ceo">Company Head / CEO</md-option>
+                                    <md-option value="other">Other</md-option>
+                                </md-select>
+                            </md-field>
+                        </div>
+                        <div class="md-layout-item md-size-50 md-small-size-100">
+                            <div>
+                                <label for="service">Service are you interested in</label><br />
+                                <md-checkbox value="Website" v-model="form.interested">Website</md-checkbox>
+                                <md-checkbox value="Application" v-model="form.interested">Application</md-checkbox>
+                                <md-checkbox value="Design" v-model="form.interested">Design</md-checkbox>
+                                <md-checkbox value="Project" v-model="form.interested">Project</md-checkbox>
+                                <div style="color: red">Project 선택시 아래 textarea disabled 처리</div>
+                            </div>
+                        </div>
+                        <div class="md-layout-item md-size-50 md-small-size-100">
+                            <md-field>
+                                <label for="message">Your Message</label>
+                                <md-textarea name="message" v-model="form.message" v-bind:disabled="form.interested == 'Project'"></md-textarea>
+                            </md-field>
+                        </div>
+                        <div class="md-layout-item md-size-50 md-small-size-100">
+                            <label for="satisfaction">How satisfied are you with our service?</label>
+                        </div>
+                        <div class="md-layout-item md-size-50 md-small-size-100">
+                            <input type="range" name="satisfaction" min="0" max="10" v-model.number="form.satisfaction" /> {{form.satisfaction}}점
+                        </div>
+                        <div class="md-layout-item md-size-50 md-small-size-100">
+                            <div>
+                                <md-checkbox value="yes" v-model="form.terms" />
+                                <label class="form-check-label">Agree to Terms and Conditions</label>
+                            </div>
+                        </div>
+                        <div class="md-layout-item md-size-50 md-small-size-100">
+                            <md-button class="md-primary md-raised" type="submit">Submit</md-button>
+                        </div>
+                    </div>
+                    <p v-if="errorshow">
+                        <ul>
+                            <li v-for="error in errors" style="color: #f5b914; font-size: 20px; list-style: none;padding: 5px;"><b>{{ error }}</b></li>
+                        </ul>
+                    </p>
+                </md-card-content>
+            </md-card>
+        </form>
+    </div>
+
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://unpkg.com/vue-material"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <script>
+        Vue.use(VueMaterial.default)
+
+        new Vue({
+            el: '#app',
+            data: {
+                form: {
+                    name: '',
+                    email: '',
+                    gender: '',
+                    refer: '',
+                    profession: [],
+                    message: '',
+                    satisfaction: '5',
+                    interested: [],
+                    terms: false,
+                },
+                errors: [],
+                errorshow: false,
+            },
+            methods: {
+                validationCheck() {
+                    this.errors = [];
+                    if (!this.form.name) {
+                        this.errors.push("이름을 입력해주세요.");
+                    }
+                    if (!this.form.email) {
+                        this.errors.push("이메일을 입력해주세요.");
+                    }
+                    if (!this.form.gender) {
+                        this.errors.push("성별을 선택해주세요.");
+                    }
+                    if (!this.form.terms) {
+                        this.errors.push("terms과 conditions를 동의해주세요.");
+                    }
+                    if (!this.errorshow) {
+                        return true;
+                    };
+
+                },
+                clearAll() {
+                    this.form.name ='',
+                    this.form.email ='',
+                    this.form.gender ='',
+                    this.form.refer ='',
+                    this.form.profession =[],
+                    this.form.message ='',
+                    this.form.satisfaction ='5',
+                    this.form.interested =[],
+                    this.form.terms =false
+                },
+                submitForm() {
+                    this.validationCheck();
+                    if (this.errors.length == 0) {
+                        axios.post('https://jsonplaceholder.typicode.com/posts', this.form)
+                            .then((res) => {
+                                console.log(res.data)
+                            })
+                            .catch((err) => {
+                                console.log(err)
+                            }).finally(() => {
+                                //Perform action in always
+                            });
+                           this.clearAll();
+                    };
+                 
+                    
+                }
+            },
+        })
+    </script>
+</body>
+
+</html>
